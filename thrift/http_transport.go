@@ -21,7 +21,6 @@ package thrift
 
 import (
 	"bytes"
-	"fmt"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -132,7 +131,8 @@ func (p *THTTPTransport) Read(buf []byte) (int, error) {
 	if err != nil {
 		p.peek = false
 	} else {
-		fmt.Printf("%s", string(buf))
+		// for debug
+		// fmt.Printf("%s", string(buf))
 	}
 	return n, NewTTransportExceptionFromError(err)
 }
