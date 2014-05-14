@@ -35,7 +35,7 @@ func (buf ClosingBuffer) Close() error {
 	return nil
 }
 
-type THTTPTransport struct {
+type THttpTransport struct {
 	conn       net.Conn
 	serverConn *httputil.ServerConn
 	addr       net.Addr
@@ -48,8 +48,8 @@ type THTTPTransport struct {
 	flush bool
 }
 
-func NewTHTTPTransport(conn net.Conn, timeout time.Duration) *THTTPTransport {
-	return &THTTPTransport{
+func NewTHttpTransport(conn net.Conn, timeout time.Duration) *THttpTransport {
+	return &THttpTransport{
 		conn:       conn,
 		serverConn: httputil.NewServerConn(conn, nil),
 		addr:       conn.RemoteAddr(),
@@ -58,20 +58,20 @@ func NewTHTTPTransport(conn net.Conn, timeout time.Duration) *THTTPTransport {
 	}
 }
 
-func NewTHTTPTransportByRequest(req *http.Request, rw http.ResponseWriter) *THTTPTransport {
-	return &THTTPTransport{
+func NewTHttpTransportByRequest(req *http.Request, rw http.ResponseWriter) *THttpTransport {
+	return &THttpTransport{
 		req:  req,
 		rw:   rw,
 		peek: true,
 	}
 }
 
-func (p *THTTPTransport) SetTimeout(timeout time.Duration) error {
+func (p *THttpTransport) SetTimeout(timeout time.Duration) error {
 	p.timeout = timeout
 	return nil
 }
 
-func (p *THTTPTransport) pushDeadline(read, write bool) {
+func (p *THttpTransport) pushDeadline(read, write bool) {
 	var t time.Time
 	if p.timeout > 0 {
 		t = time.Now().Add(time.Duration(p.timeout))
@@ -85,18 +85,18 @@ func (p *THTTPTransport) pushDeadline(read, write bool) {
 	}
 }
 
-func (p *THTTPTransport) Open() error {
+func (p *THttpTransport) Open() error {
 	return nil
 }
 
-func (p *THTTPTransport) IsOpen() bool {
+func (p *THttpTransport) IsOpen() bool {
 	if p.serverConn == nil && p.req == nil {
 		return false
 	}
 	return true
 }
 
-func (p *THTTPTransport) Close() error {
+func (p *THttpTransport) Close() error {
 	if !p.flush {
 		err := p.Flush()
 		if err != nil {
@@ -113,7 +113,7 @@ func (p *THTTPTransport) Close() error {
 	return nil
 }
 
-func (p *THTTPTransport) Read(buf []byte) (int, error) {
+func (p *THttpTransport) Read(buf []byte) (int, error) {
 	if !p.IsOpen() {
 		return 0, NewTTransportException(NOT_OPEN, "Connection not open")
 	}
@@ -137,7 +137,7 @@ func (p *THTTPTransport) Read(buf []byte) (int, error) {
 	return n, NewTTransportExceptionFromError(err)
 }
 
-func (p *THTTPTransport) Write(buf []byte) (int, error) {
+func (p *THttpTransport) Write(buf []byte) (int, error) {
 	if !p.IsOpen() {
 		return 0, NewTTransportException(NOT_OPEN, "Connection not open")
 	}
@@ -149,11 +149,11 @@ func (p *THTTPTransport) Write(buf []byte) (int, error) {
 	}
 }
 
-func (p *THTTPTransport) Peek() bool {
+func (p *THttpTransport) Peek() bool {
 	return p.peek
 }
 
-func (p *THTTPTransport) Flush() error {
+func (p *THttpTransport) Flush() error {
 	if p.rw != nil {
 		return nil
 	}

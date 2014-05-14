@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dworld/gothrift/example/http_server/test"
+	"github.com/dworld/gothrift/example/http_transport/test"
 	"github.com/dworld/gothrift/thrift"
 )
 
@@ -13,7 +13,10 @@ func main() {
 	protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
 
 	// transport, err := thrift.NewTSocket(net.JoinHostPort("127.0.0.1", "19090"))
-	transport, err := thrift.NewTHttpPostClient("http://127.0.0.1:19090/")
+	// for goserver
+	// transport, err := thrift.NewTHttpPostClient("http://127.0.0.1:19090/")
+	// for goserver and goserver2
+	transport, err := thrift.NewTHttpPostClient("http://127.0.0.1:19090/api")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error resolving address:", err)
 		os.Exit(1)

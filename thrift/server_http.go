@@ -25,26 +25,26 @@ import (
 	"time"
 )
 
-type TServerHTTP struct {
+type TServerHttp struct {
 	listener      net.Listener
 	addr          net.Addr
 	clientTimeout time.Duration
 	interrupted   bool
 }
 
-func NewTServerHTTP(listenAddr string) (*TServerHTTP, error) {
-	return NewTServerHTTPTimeout(listenAddr, 0)
+func NewTServerHttp(listenAddr string) (*TServerHttp, error) {
+	return NewTServerHttpTimeout(listenAddr, 0)
 }
 
-func NewTServerHTTPTimeout(listenAddr string, clientTimeout time.Duration) (*TServerHTTP, error) {
+func NewTServerHttpTimeout(listenAddr string, clientTimeout time.Duration) (*TServerHttp, error) {
 	addr, err := net.ResolveTCPAddr("tcp", listenAddr)
 	if err != nil {
 		return nil, err
 	}
-	return &TServerHTTP{addr: addr, clientTimeout: clientTimeout}, nil
+	return &TServerHttp{addr: addr, clientTimeout: clientTimeout}, nil
 }
 
-func (p *TServerHTTP) Listen() error {
+func (p *TServerHttp) Listen() error {
 	if p.IsListening() {
 		return nil
 	}
@@ -56,7 +56,7 @@ func (p *TServerHTTP) Listen() error {
 	return nil
 }
 
-func (p *TServerHTTP) Accept() (TTransport, error) {
+func (p *TServerHttp) Accept() (TTransport, error) {
 	if p.interrupted {
 		return nil, errTransportInterrupted
 	}
@@ -67,16 +67,16 @@ func (p *TServerHTTP) Accept() (TTransport, error) {
 	if err != nil {
 		return nil, NewTTransportExceptionFromError(err)
 	}
-	return NewTHTTPTransport(conn, p.clientTimeout), nil
+	return NewTHttpTransport(conn, p.clientTimeout), nil
 }
 
 // Checks whether the socket is listening.
-func (p *TServerHTTP) IsListening() bool {
+func (p *TServerHttp) IsListening() bool {
 	return p.listener != nil
 }
 
 // Connects the socket, creating a new socket object if necessary.
-func (p *TServerHTTP) Open() error {
+func (p *TServerHttp) Open() error {
 	if p.IsListening() {
 		return NewTTransportException(ALREADY_OPEN, "Server socket already open")
 	}
@@ -88,11 +88,11 @@ func (p *TServerHTTP) Open() error {
 	return nil
 }
 
-func (p *TServerHTTP) Addr() net.Addr {
+func (p *TServerHttp) Addr() net.Addr {
 	return p.addr
 }
 
-func (p *TServerHTTP) Close() error {
+func (p *TServerHttp) Close() error {
 	defer func() {
 		p.listener = nil
 	}()
@@ -102,7 +102,7 @@ func (p *TServerHTTP) Close() error {
 	return nil
 }
 
-func (p *TServerHTTP) Interrupt() error {
+func (p *TServerHttp) Interrupt() error {
 	p.interrupted = true
 	return nil
 }
@@ -111,19 +111,19 @@ type ErrorHandler interface {
 	HandleError(error)
 }
 
-type HTTPHandler struct {
+type HttpHandler struct {
 	processorFactory      TProcessorFactory
 	inputProtocolFactory  TProtocolFactory
 	outputProtocolFactory TProtocolFactory
 	errorHandler          ErrorHandler
 }
 
-func NewHTTPHandler(processor TProcessor, inputProtocolFactory, outputProtocolFactory TProtocolFactory, errorHandler ErrorHandler) *HTTPHandler {
-	return &HTTPHandler{NewTProcessorFactory(processor), inputProtocolFactory, outputProtocolFactory, errorHandler}
+func NewHttpHandler(processor TProcessor, inputProtocolFactory, outputProtocolFactory TProtocolFactory, errorHandler ErrorHandler) *HttpHandler {
+	return &HttpHandler{NewTProcessorFactory(processor), inputProtocolFactory, outputProtocolFactory, errorHandler}
 }
 
-func (h *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	trans := NewTHTTPTransportByRequest(r, w)
+func (h *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	trans := NewTHttpTransportByRequest(r, w)
 	inputTransport := trans
 	outputTransport := trans
 	processor := h.processorFactory.GetProcessor(trans)

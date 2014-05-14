@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dworld/gothrift/example/http_server/test"
+	"github.com/dworld/gothrift/example/http_transport/test"
 	"github.com/dworld/gothrift/thrift"
 )
 
@@ -23,7 +23,7 @@ func (t *TestImpl) Hello(name string) (string, error) {
 func main() {
 	transportFactory := thrift.NewTTransportFactory()
 	protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
-	transport, err := thrift.NewTServerHTTP(NetworkAddr)
+	transport, err := thrift.NewTServerHttp(NetworkAddr)
 	// transport, err := thrift.NewTServerSocket(NetworkAddr)
 	if err != nil {
 		fmt.Println(err)

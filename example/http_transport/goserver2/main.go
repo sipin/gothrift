@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dworld/gothrift/example/http_server/test"
+	"github.com/dworld/gothrift/example/http_transport/test"
 	"github.com/dworld/gothrift/thrift"
 )
 
@@ -26,6 +26,6 @@ func main() {
 	testImpl := &TestImpl{}
 	processor := test.NewTestProcessor(testImpl)
 
-	http.Handle("/api", thrift.NewHTTPHandler(processor, protocolFactory, protocolFactory, nil))
+	http.Handle("/api", thrift.NewHttpHandler(processor, protocolFactory, protocolFactory, nil))
 	log.Fatal(http.ListenAndServe(":19090", nil))
 }
