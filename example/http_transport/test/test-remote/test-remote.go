@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dworld/gothrift/example/http_server/test"
-	"github.com/dworld/gothrift/thrift"
+	"github.com/sipin/gothrift/example/http_server/test"
+	"github.com/sipin/gothrift/thrift"
 )
 
 func Usage() {

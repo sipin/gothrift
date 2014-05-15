@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/dworld/gothrift/thrift"
+	"github.com/sipin/gothrift/thrift"
 )
 
 // (needed to ensure safety because of naive import list construction.)

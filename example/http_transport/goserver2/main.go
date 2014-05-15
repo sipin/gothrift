@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dworld/gothrift/example/http_transport/test"
-	"github.com/dworld/gothrift/thrift"
+	"github.com/sipin/gothrift/example/http_transport/test"
+	"github.com/sipin/gothrift/thrift"
 )
 
 const (
