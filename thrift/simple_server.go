@@ -20,6 +20,7 @@
 package thrift
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -133,6 +134,12 @@ loop:
 		}
 		if client != nil {
 			go func() {
+				defer func() {
+					if err := recover(); err != nil {
+						fmt.Println("panic processing request:", err)
+						log.Println("panic processing request:", err)
+					}
+				}()
 				if err := p.processRequest(client); err != nil {
 					log.Println("error processing request:", err)
 				}
@@ -162,7 +169,7 @@ func (p *TSimpleServer) processRequest(client TTransport) error {
 	}
 	for {
 		ok, err := processor.Process(inputProtocol, outputProtocol)
-		if err, ok := err.(TTransportException); ok && err.TypeId() == END_OF_FILE{
+		if err, ok := err.(TTransportException); ok && err.TypeId() == END_OF_FILE {
 			return nil
 		} else if err != nil {
 			return err
