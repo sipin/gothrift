@@ -17,28 +17,28 @@
  * under the License.
  */
 
-package thrift
+package tests
 
 import (
-	"errors"
+	"gotagtest"
+	"reflect"
+	"testing"
 )
 
-// Generic Thrift exception
-type TException interface {
-	error
+func TestDefaultTag(t *testing.T) {
+	s := gotagtest.Tagged{}
+	st := reflect.TypeOf(s)
+	field, ok := st.FieldByName("StringThing")
+	if !ok || field.Tag.Get("json") != "string_thing" {
+		t.Error("Unexpected default tag value")
+	}
 }
 
-// Prepends additional information to an error without losing the Thrift exception interface
-func PrependError(prepend string, err error) error {
-	if t, ok := err.(TTransportException); ok {
-		return NewTTransportException(t.TypeId(), prepend+t.Error())
+func TestCustomTag(t *testing.T) {
+	s := gotagtest.Tagged{}
+	st := reflect.TypeOf(s)
+	field, ok := st.FieldByName("IntThing")
+	if !ok || field.Tag.Get("json") != "int_thing,string" {
+		t.Error("Unexpected custom tag value")
 	}
-	if t, ok := err.(TProtocolException); ok {
-		return NewTProtocolExceptionWithType(t.TypeId(), errors.New(prepend+err.Error()))
-	}
-	if t, ok := err.(TApplicationException); ok {
-		return NewTApplicationException(t.TypeId(), prepend+t.Error())
-	}
-
-	return errors.New(prepend + err.Error())
 }

@@ -17,28 +17,20 @@
  * under the License.
  */
 
-package thrift
+package tests
 
 import (
-	"errors"
+	st "servicestest"
 )
 
-// Generic Thrift exception
-type TException interface {
-	error
-}
+//this function is never called, it will fail to compile if check is failed
+func staticCheckStructArgsResults() {
+	//Check that struct args and results are passed by reference
+	var sa *st.StructA = &st.StructA{}
+	var iface st.AServ
+	var err error
 
-// Prepends additional information to an error without losing the Thrift exception interface
-func PrependError(prepend string, err error) error {
-	if t, ok := err.(TTransportException); ok {
-		return NewTTransportException(t.TypeId(), prepend+t.Error())
-	}
-	if t, ok := err.(TProtocolException); ok {
-		return NewTProtocolExceptionWithType(t.TypeId(), errors.New(prepend+err.Error()))
-	}
-	if t, ok := err.(TApplicationException); ok {
-		return NewTApplicationException(t.TypeId(), prepend+t.Error())
-	}
-
-	return errors.New(prepend + err.Error())
+	sa, err = iface.StructAFunc_1structA(sa)
+	_ = err
+	_ = sa
 }

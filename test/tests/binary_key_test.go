@@ -17,28 +17,15 @@
  * under the License.
  */
 
-package thrift
+package tests
 
 import (
-	"errors"
+	"binarykeytest"
+	"testing"
 )
 
-// Generic Thrift exception
-type TException interface {
-	error
-}
-
-// Prepends additional information to an error without losing the Thrift exception interface
-func PrependError(prepend string, err error) error {
-	if t, ok := err.(TTransportException); ok {
-		return NewTTransportException(t.TypeId(), prepend+t.Error())
-	}
-	if t, ok := err.(TProtocolException); ok {
-		return NewTProtocolExceptionWithType(t.TypeId(), errors.New(prepend+err.Error()))
-	}
-	if t, ok := err.(TApplicationException); ok {
-		return NewTApplicationException(t.TypeId(), prepend+t.Error())
-	}
-
-	return errors.New(prepend + err.Error())
+func TestBinaryMapKeyGeneratesString(t *testing.T) {
+	s := binarykeytest.NewTestStruct()
+	//This will only compile if BinToString has type of map[string]string
+	s.BinToString = make(map[string]string)
 }
