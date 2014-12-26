@@ -130,9 +130,9 @@ func (p *THttpTransport) Read(buf []byte) (int, error) {
 	n, err := p.req.Body.Read(buf)
 	if err != nil {
 		p.peek = false
-	} else {
-		// for debug
-		// fmt.Printf("%s", string(buf))
+	}
+	if n > 0 {
+		return n, nil
 	}
 	return n, NewTTransportExceptionFromError(err)
 }
